@@ -50,7 +50,7 @@ describe('GamePage', () => {
         provideIonicAngular({ mode: 'md' }),
         { provide: QUESTION_PACK, useValue: pack },
         { provide: GAME_RANDOM, useValue: () => 0.5 },
-        { provide: GAME_TIMING, useValue: { countUp: 0, hold: 0, holdWrong: 0, idle: 60_000 } },
+        { provide: GAME_TIMING, useValue: { count: 0, hold: 0, holdWrong: 0, idle: 60_000 } },
         {
           provide: BoothMode,
           useValue: {
@@ -119,8 +119,9 @@ describe('GamePage', () => {
     expect(text('.topic')).toBe('Which came first?');
     expect(text('.score')).toBe('Score 0');
     expect(shown[0].querySelector('.value')?.textContent).toBe(String(left.value));
-    expect(shown[0].querySelector('.answer')).toBeNull();
-    expect(shown[1].querySelector('.value')).toBeNull();
+    expect(shown[0].querySelector('.ask')?.classList).toContain('gone');
+    expect(shown[1].querySelector('.reveal')?.classList).toContain('gone');
+    expect(shown[1].textContent).not.toContain(String(second.value));
     expect(text('app-fact-card:last-of-type .question')).toBe(`Earlier or later than ${left.name}?`);
     expect(second.value).not.toBe(left.value);
   });

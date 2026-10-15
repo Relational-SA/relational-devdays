@@ -1,19 +1,23 @@
 <h2 class="name">{{ fact().name }}</h2>
 <p class="detail">{{ fact().detail }}</p>
 
-@if (value() === null) {
-  <p class="question">{{ question() }}</p>
-  <div class="answers">
-    <button type="button" class="answer higher" (click)="guess.emit('higher')">
-      {{ category().higher }} <span aria-hidden="true">▲</span>
-    </button>
-    <button type="button" class="answer lower" (click)="guess.emit('lower')">
-      {{ category().lower }} <span aria-hidden="true">▼</span>
-    </button>
+<!-- The question and the answer share one place, so nothing on the card moves when it turns. -->
+<div class="stage">
+  <div class="ask" [class.gone]="value() !== null">
+    <p class="question">{{ question() }}</p>
+    <div class="answers">
+      <button type="button" class="answer higher" (click)="guess.emit('higher')">
+        {{ category().higher }} <span aria-hidden="true">▲</span>
+      </button>
+      <button type="button" class="answer lower" (click)="guess.emit('lower')">
+        {{ category().lower }} <span aria-hidden="true">▼</span>
+      </button>
+    </div>
   </div>
-} @else {
-  <p class="value">{{ shownValue() }}</p>
-  @if (category().unit) {
-    <p class="unit">{{ category().unit }}</p>
-  }
-}
+  <div class="reveal" [class.gone]="value() === null">
+    <p class="value">{{ shownValue() }}</p>
+    @if (category().unit) {
+      <p class="unit">{{ category().unit }}</p>
+    }
+  </div>
+</div>

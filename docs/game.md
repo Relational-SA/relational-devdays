@@ -50,7 +50,7 @@ line so changes are easy to review.
 | --- | --- |
 | `title` | The topic, above the cards and on the start screen. |
 | `caption` | Small copy under the cards: what the number means and where it comes from. |
-| `format` | How numbers show: `year` (1991), `integer` (27), `compact` (251K) or `percent` (57.9%, stored as `57.9`). |
+| `format` | How numbers show: `year` (1991), `code` (8080, a number without thousands separators, such as a port), `integer` (27), `compact` (251K) or `percent` (57.9%, stored as `57.9`). |
 | `unit` | Shown under a revealed number, such as `stars`; empty for years. |
 | `question` | Asked on the second card. `{name}` stands for the first card's name. |
 | `higher`, `lower` | The two answer buttons, such as *Later* and *Earlier*. |
@@ -74,12 +74,15 @@ All numbers were collected on 2026-10-15 from public sources.
 | Topic | Facts | Numbers | Source |
 | --- | ---: | --- | --- |
 | Which came first? | 62 | Year of first release, launch or founding: languages, tools, platforms, famous incidents and fintech milestones | Wikipedia |
-| GitHub stars | 34 | Stars of popular open-source repositories, rounded to thousands | GitHub |
+| GitHub stars | 33 | Stars of popular open-source repositories, rounded to thousands | GitHub |
 | Developer survey | 35 | Share of developers who used a language, database, platform or tool in the past year | Stack Overflow Developer Survey 2025 |
-| IBAN length | 22 | Characters in a national IBAN | SWIFT IBAN Registry, December 2024 |
+| Port numbers | 31 | Default TCP ports of protocols, databases, dev servers and a few games | IANA port registry, product documentation |
+| HTTP status codes | 30 | From 100 Continue to 504 Gateway Timeout, plus 418 I'm a teapot | IANA HTTP Status Code Registry, RFC 2324 |
 
 *Which came first?* leaves out things whose first year is disputed or depends on the definition,
-such as Rust, SQL, Vim and Emacs. GitHub stars keep changing; the caption states the date they were counted.
+such as Rust, SQL, Vim and Emacs. GitHub stars keep changing; the caption states the date they
+were counted. Port numbers use the IANA registration where there is one, and the product's
+documentation for unregistered defaults such as the Angular (4200) and Vite (5173) dev servers.
 
 The pack has no facts about Relational. Facts about the company go into *Which came first?* only
 once Marketing has supplied or approved them, with a public source.

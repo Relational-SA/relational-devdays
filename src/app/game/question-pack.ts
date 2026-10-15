@@ -10,7 +10,7 @@ export interface QuestionPack {
   readonly categories: readonly Category[];
 }
 
-export type ValueFormat = 'year' | 'integer' | 'compact' | 'percent';
+export type ValueFormat = 'year' | 'code' | 'integer' | 'compact' | 'percent';
 
 export interface Category {
   readonly id: string;
@@ -49,12 +49,32 @@ export const QUESTION_PACK = new InjectionToken<QuestionPack>('QUESTION_PACK', {
 
 const formats: Record<ValueFormat, Intl.NumberFormat> = {
   year: new Intl.NumberFormat('en', { useGrouping: false, maximumFractionDigits: 0 }),
+  code: new Intl.NumberFormat('en', { useGrouping: false, maximumFractionDigits: 0 }),
   integer: new Intl.NumberFormat('en', { maximumFractionDigits: 0 }),
   compact: new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 0 }),
   percent: new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 1 }),
 };
 
-/** A value as the cards show it: 1991, 27, 251K, 57.9%. */
-export function formatValue(value: number, format: ValueFormat): string {
-  return formats[format].format(format === 'percent' ? value / 100 : value);
+/** Percentages with a fixed number of decimals (0 or 1), for numbers on their way to a value. */
+const fixedPercent = [0, 1].map(
+  (digits) =>
+    new Intl.NumberFormat('en', {
+      style: 'percent',
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    }),
+);
+
+/**
+ * A value as the cards show it: 1991, 8080, 27, 251K, 57.9%. While a number runs towards a value,
+ * pass that value as `like`: percentages then keep its decimals (50.0%, not 50%), so the
+ * number does not change width on the way.
+ */
+export function formatValue(value: number, format: ValueFormat, like?: number): string {
+  if (format !== 'percent') {
+    return formats[format].format(value);
+  }
+  const formatter =
+    like === undefined ? formats.percent : fixedPercent[Number.isInteger(like) ? 0 : 1];
+  return formatter.format(value / 100);
 }

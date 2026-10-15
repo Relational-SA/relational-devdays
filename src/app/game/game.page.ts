@@ -26,8 +26,8 @@ export const GAME_NAME = 'Big O';
 
 /** Durations in milliseconds; tests set them to 0. */
 export interface GameTiming {
-  /** The second card's value counting up to the answer. */
-  readonly countUp: number;
+  /** The second card's number running from the first card's number to its own. */
+  readonly count: number;
   /** How long the result shows before the next pair (or the game-over screen). */
   readonly hold: number;
   readonly holdWrong: number;
@@ -41,7 +41,7 @@ export const GAME_TIMING = new InjectionToken<GameTiming>('GAME_TIMING', {
     const reduceMotion = inject(DOCUMENT).defaultView?.matchMedia?.(
       '(prefers-reduced-motion: reduce)',
     )?.matches;
-    return { countUp: reduceMotion ? 0 : 1000, hold: 1100, holdWrong: 1600, idle: 60_000 };
+    return { count: reduceMotion ? 0 : 1000, hold: 1100, holdWrong: 1600, idle: 60_000 };
   },
 });
 
@@ -55,7 +55,7 @@ type Phase = 'start' | 'play' | 'over';
 
 interface Reveal {
   readonly correct: boolean;
-  /** The count-up has finished and the result shows. */
+  /** The number has reached the second card's value and the result shows. */
   readonly settled: boolean;
 }
 
@@ -79,7 +79,7 @@ export class GamePage {
   protected readonly phase = signal<Phase>('start');
   protected readonly game = signal<GameState | null>(null);
   protected readonly reveal = signal<Reveal | null>(null);
-  /** The second card's value while it counts up. */
+  /** The second card's number while it runs towards its value. */
   private readonly countedValue = signal(0);
   protected readonly newBest = signal(false);
   /** Read out by screen readers after every guess. */
@@ -152,7 +152,7 @@ export class GamePage {
     const correct = correctGuess(game) === guess;
     this.reveal.set({ correct, settled: false });
 
-    await this.countUp(game.right.value);
+    await this.count(game.left.value, game.right.value);
     if (run !== this.run) {
       return;
     }
@@ -179,25 +179,32 @@ export class GamePage {
     this.phase.set('start');
   }
 
-  /** Counts the second card's value up from zero, slowing down towards the answer. */
-  private countUp(target: number): Promise<void> {
-    const duration = this.timing.countUp;
+  /**
+   * Runs the second card's number from the first card's number to its own, slowing down towards
+   * the answer: it starts at a number the player knows, and its direction gives the answer away
+   * only gradually.
+   */
+  private count(from: number, to: number): Promise<void> {
+    const duration = this.timing.count;
     if (duration <= 0) {
-      this.countedValue.set(target);
+      this.countedValue.set(to);
       return Promise.resolve();
     }
     return new Promise((resolve) => {
-      const start = performance.now();
+      // The clock starts at the first frame: a frame's timestamp can be a little earlier than
+      // the tap, and a negative progress would first move the number the wrong way.
+      let start: number | undefined;
       const step = (now: number) => {
+        start ??= now;
         const progress = Math.min((now - start) / duration, 1);
-        this.countedValue.set(target * (1 - (1 - progress) ** 3));
+        this.countedValue.set(from + (to - from) * (1 - (1 - progress) ** 3));
         if (progress < 1) {
           requestAnimationFrame(step);
         } else {
           resolve();
         }
       };
-      this.countedValue.set(0);
+      this.countedValue.set(from);
       requestAnimationFrame(step);
     });
   }

@@ -1,7 +1,7 @@
 import { ROUNDS_PER_CATEGORY } from './game-engine';
 import { Category, Fact, QuestionPack, ValueFormat, formatValue } from './question-pack';
 
-const FORMATS: readonly ValueFormat[] = ['year', 'integer', 'compact', 'percent'];
+const FORMATS: readonly ValueFormat[] = ['year', 'code', 'integer', 'compact', 'percent'];
 const ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const AS_OF = /^(\d{4})(?:-(0[1-9]|1[0-2])(?:-(0[1-9]|[12]\d|3[01]))?)?$/;
 
