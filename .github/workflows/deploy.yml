@@ -18,7 +18,8 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moves to Ubuntu 26.04 from 2026-10-19, during the event run-up.
+    runs-on: ubuntu-24.04
     env:
       # Project site: https://<owner>.github.io/<repo>/. With a custom domain served from the
       # root, set the repository variable BASE_HREF to "/" (Settings > Secrets and variables > Actions > Variables).
@@ -46,7 +47,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
