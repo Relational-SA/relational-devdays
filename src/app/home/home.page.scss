@@ -1,3 +1,8 @@
+// Aqua is the brand's main background.
+ion-content {
+  --background: var(--rel-aqua);
+}
+
 .welcome {
   max-width: 40rem;
   margin: 0 auto;

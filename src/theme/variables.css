@@ -1,10 +1,44 @@
-/**
- * Ionic Dark Theme
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
+/*
+ * Relational brand theme (Brand Manual 2025).
+ *
+ * Primary colours: navy (Pantone 7546 C) and aqua (Pantone 564 C). The secondary colours,
+ * orange (Pantone 7549 C) and purple (Pantone 253 C), only highlight: they may cover at most
+ * 15% of the area the primary colours cover.
+ *
+ * Light theme only: the manual defines no dark variant, so the app looks the same on every
+ * device whatever its system setting.
  */
+:root {
+  --rel-navy: #25384a;
+  --rel-navy-rgb: 37, 56, 74;
+  --rel-aqua: #86cac6;
+  --rel-aqua-rgb: 134, 202, 198;
+  --rel-orange: #f2ba44;
+  --rel-purple: #ae19b7;
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+  --ion-font-family: 'Sofia Sans', system-ui, sans-serif;
+  --ion-text-color: var(--rel-navy);
+  --ion-text-color-rgb: var(--rel-navy-rgb);
+
+  /* Navy carries white text; aqua and orange carry navy text, as in the logo. */
+  --ion-color-primary: #25384a;
+  --ion-color-primary-rgb: 37, 56, 74;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #213141;
+  --ion-color-primary-tint: #3b4c5c;
+
+  --ion-color-secondary: #86cac6;
+  --ion-color-secondary-rgb: 134, 202, 198;
+  --ion-color-secondary-contrast: #25384a;
+  --ion-color-secondary-contrast-rgb: 37, 56, 74;
+  --ion-color-secondary-shade: #76b2ae;
+  --ion-color-secondary-tint: #92cfcc;
+
+  --ion-color-tertiary: #f2ba44;
+  --ion-color-tertiary-rgb: 242, 186, 68;
+  --ion-color-tertiary-contrast: #25384a;
+  --ion-color-tertiary-contrast-rgb: 37, 56, 74;
+  --ion-color-tertiary-shade: #d5a43c;
+  --ion-color-tertiary-tint: #f3c157;
+}

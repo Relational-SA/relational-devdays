@@ -5,17 +5,38 @@
     <title>Relational @ DevDays</title>
     <base href="/" />
     <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#25384a" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Relational" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+    <link rel="icon" href="favicon.ico" sizes="32x32" />
+    <link rel="icon" href="brand/relational-symbol.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <style>
+      /* Splash while the app boots: the primary logo on the brand's main background (aqua).
+         Angular replaces the content of <app-root> once the app renders. */
+      .boot-splash {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: #86cac6;
+      }
+      .boot-splash img {
+        width: min(60vw, 20rem);
+        height: auto;
+      }
+    </style>
   </head>
   <body>
-    <app-root></app-root>
+    <app-root>
+      <div class="boot-splash">
+        <img src="brand/relational-logo-primary.svg" alt="Relational" width="220" height="63" />
+      </div>
+    </app-root>
     <noscript>Please enable JavaScript to continue using this application.</noscript>
   </body>
 </html>

@@ -1,0 +1,38 @@
+/*
+ * Sofia Sans, the Relational corporate typeface.
+ * Copyright 2019 The Sofia Sans Project Authors (https://github.com/lettersoup/Sofia-Sans),
+ * SIL Open Font License 1.1 (fonts/OFL.txt). The WOFF2 files repackage version 4.101 with the
+ * glyphs unchanged: Light and Regular from the brand assets, Semi Bold and Extra Bold from the
+ * project's repository.
+ */
+@font-face {
+  font-family: 'Sofia Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('./fonts/sofia-sans-300.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Sofia Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/sofia-sans-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Sofia Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/sofia-sans-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Sofia Sans';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('./fonts/sofia-sans-800.woff2') format('woff2');
+}

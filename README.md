@@ -13,6 +13,8 @@ documents or internal URLs. Brand assets are committed only in their derived, pu
 - Ionic 9 (`@ionic/angular`, Material mode on every platform)
 - `@angular/service-worker`: offline app shell; installed apps poll for new versions every
   15 minutes and offer a reload
+- Relational brand (colours, Sofia Sans, logo, icons): see [docs/brand.md](docs/brand.md). The
+  fonts are under the SIL Open Font License ([src/theme/fonts/OFL.txt](src/theme/fonts/OFL.txt)).
 
 ## Develop
 

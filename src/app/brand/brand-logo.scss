@@ -1,0 +1,16 @@
+// Brand Manual 2025, logo section: a clear space of 2x on every side, where x is the gap between
+// the box and the R (8.97 of the logo's 220.15 units of width, so 2x = 8.15% of the width), and
+// a width of at least 3 cm.
+:host {
+  --brand-logo-width: 8rem;
+  --_width: max(3cm, var(--brand-logo-width));
+  display: inline-block;
+  padding: calc(var(--_width) * 0.0815);
+  line-height: 0;
+}
+
+img {
+  display: block;
+  width: var(--_width);
+  height: auto;
+}

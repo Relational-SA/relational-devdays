@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular';
+import { IonContent, IonHeader, IonToolbar } from '@ionic/angular';
+import { BrandLogo } from '../brand/brand-logo';
 
 /** Placeholder landing page; the booth content is scoped in a follow-up PBI. */
 @Component({
   selector: 'app-home',
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [IonHeader, IonToolbar, IonContent, BrandLogo],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
 })

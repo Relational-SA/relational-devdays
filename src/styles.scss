@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles; loaded after the Ionic CSS and the theme (angular.json), so they win ties. */
+
+/* Brand Manual 2025 type scale: titles Extra Bold, subtitles Semi Bold, main copy Regular,
+   small copy Light. */
+h1,
+h2 {
+  font-weight: 800;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+}
+
+small {
+  font-weight: 300;
+}
