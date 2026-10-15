@@ -3,6 +3,13 @@ ion-content {
   --background: var(--rel-aqua);
 }
 
+// Copyright line in small copy. The content runs fullscreen under the transparent footer, so the
+// aqua continues to the bottom edge without a seam.
+ion-footer {
+  padding: 0.5rem 1rem calc(0.5rem + var(--ion-safe-area-bottom, 0px));
+  text-align: center;
+}
+
 .welcome {
   max-width: 40rem;
   margin: 0 auto;

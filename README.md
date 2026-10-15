@@ -22,7 +22,7 @@ documents or internal URLs. Brand assets are committed only in their derived, pu
 npm ci
 npm start          # http://localhost:4200 (service worker disabled in dev mode)
 npm test           # unit tests (Vitest)
-npm run build      # production build in dist/relational-devdays/browser, plus 404.html
+npm run build      # production build in dist/relational-devdays/browser, plus 404.html and 3rdpartylicenses.txt
 ```
 
 To try the service worker and install prompt locally, serve the production build over HTTP, for
@@ -40,3 +40,19 @@ visit; after that the service worker serves every navigation.
 Every push to `main` deploys to <https://relational-sa.github.io/relational-devdays/>
 ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)). See [docs/hosting.md](docs/hosting.md)
 for the repository rules, the QR code, and an optional custom subdomain.
+
+## Copyright
+
+© 2026 Relational S.A. All rights reserved.
+
+This repository is public only so that GitHub Pages can serve the app. No licence is granted to
+use, copy, modify or distribute its contents, beyond what the GitHub Terms of Service allow for
+viewing and forking public repositories on GitHub. Relational, the Relational logo and other
+Relational marks are trademarks of Relational S.A. and may not be used without its written
+permission.
+
+Third-party components keep their own licences: Sofia Sans is under the SIL Open Font License 1.1
+([src/theme/fonts/OFL.txt](src/theme/fonts/OFL.txt)), and the site publishes the licences of the
+npm packages it bundles at
+<https://relational-sa.github.io/relational-devdays/3rdpartylicenses.txt>
+([scripts/third-party-licenses.mjs](scripts/third-party-licenses.mjs)).
