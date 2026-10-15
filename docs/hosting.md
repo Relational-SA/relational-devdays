@@ -11,9 +11,20 @@ A custom Relational subdomain is not used for now; section 4 covers adding one l
 
 ## 1. Repository
 
-- Repository `Relational-SA/relational-devdays`, **public**. Publishing Pages from a private
-  repository needs a paid organisation plan (Team or Enterprise); the site itself is public either
-  way, because visitors open it from a QR code.
+- Repository `Relational-SA/relational-devdays`, **public**. The organisation is on GitHub Free,
+  where Pages serves only public repositories: making it private on 2026-10-15 took the site down
+  at once and deleted its Pages configuration. A private repository needs a paid organisation
+  plan (Team or Enterprise); the site itself is public either way, because visitors open it from
+  a QR code.
+- Guards against the public (repository settings, set 2026-10-15):
+  - Pull requests and issues: creation limited to collaborators (General > Features).
+  - Interaction limits: collaborators only, for 6 months (Moderation > Interaction limits; renew
+    it if needed, it lapses around 2027-04-15).
+  - Wiki and commit comments off.
+  - Ruleset `Protect main`: no deletion, no force push. Collaborators still push directly.
+  - Actions: only actions created by GitHub may run; workflows from fork pull requests need
+    approval for every external contributor; the default `GITHUB_TOKEN` is read-only.
+  - Secret Protection with push protection, and Dependabot alerts.
 - Nothing confidential in the repository: no secrets, no internal documents (the brand manual
   stays internal), no internal hostnames. The deploy workflow uses only the built-in
   `GITHUB_TOKEN`.
