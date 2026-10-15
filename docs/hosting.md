@@ -17,10 +17,13 @@ A custom Relational subdomain is not used for now; section 4 covers adding one l
   plan (Team or Enterprise); the site itself is public either way, because visitors open it from
   a QR code.
 - Guards against the public (repository settings, set 2026-10-15):
-  - Pull requests and issues: creation limited to collaborators (General > Features).
-  - Interaction limits: collaborators only, for 6 months (Moderation > Interaction limits; renew
-    it if needed, it lapses around 2027-04-15).
-  - Wiki and commit comments off.
+  - Issues, pull requests, wiki, discussions and projects off (General > Features), and commit
+    comments off (General > Commits), so the public has nothing to comment on. Work is tracked in
+    TFS and the team pushes to `main` directly. If pull requests or issues are ever turned back
+    on, limit their creation to collaborators.
+  - Interaction limits: collaborators only, for 6 months (Moderation > Interaction limits). GitHub
+    caps them at 6 months; with the features above off there is no need to renew them when they
+    lapse around 2027-04-15.
   - Ruleset `Protect main`: no deletion, no force push. Collaborators still push directly.
   - Actions: only actions created by GitHub may run; workflows from fork pull requests need
     approval for every external contributor; the default `GITHUB_TOKEN` is read-only.
