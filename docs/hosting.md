@@ -49,10 +49,24 @@ A custom Relational subdomain is not used for now; section 4 covers adding one l
 
 ## 3. QR code
 
-- Encode `https://relational-sa.github.io/relational-devdays/` (with the trailing slash).
-- GitHub does **not** redirect `github.io` URLs when a repository is renamed or transferred. Until
-  after the event, do not rename, transfer or delete the repository, or the printed QR code and
-  the apps installed on the tablets stop working.
+- [`qr/devdays-qr.svg`](qr/devdays-qr.svg) (vector, for print) and
+  [`qr/devdays-qr.png`](qr/devdays-qr.png) (1200 px) encode
+  `https://relational-sa.github.io/relational-devdays/` (with the trailing slash): navy on white,
+  error correction level Q (still reads with about 25% of the code damaged or covered), with the
+  standard 4-module quiet zone. Regenerate with
+  `npx qrcode@1.5.4 -t svg -e Q -q 4 -d "#25384a" -l "#ffffff" -o docs/qr/devdays-qr.svg <url>`.
+- [`qr/devdays-qr-logo.svg`](qr/devdays-qr-logo.svg) and [`qr/devdays-qr-logo.png`](qr/devdays-qr-logo.png):
+  the same address at error correction level H (about 30%), with the Relational symbol on a white
+  pad of 11 × 15 modules in the centre, 10% of the code's area. A decode test still read the code
+  with the pad grown to 21% and failed at 26%, so the logo uses less than half of the margin and
+  the rest absorbs glare, angle and dirt on the print.
+- Print the address as text under the code, and also show the code on a tablet screen, so a
+  sticker placed over the printed code is easy to spot.
+- GitHub does **not** redirect `github.io` URLs when a repository or organisation is renamed or
+  transferred. Until after the event, do not rename, transfer or delete the repository or the
+  `Relational-SA` organisation, or the printed QR code and the apps installed on the tablets stop
+  working. A renamed organisation's old name can be claimed by another account, which would then
+  control the address.
 - Test the printed code on Android and iPhone before the event.
 
 ## 4. Optional: custom Relational subdomain
