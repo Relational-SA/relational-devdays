@@ -11,6 +11,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular';
 import { AppUpdateService } from './app-update.service';
 import { routes } from './app.routes';
+import { BoothMode } from './booth-mode';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,5 +26,6 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     provideAppInitializer(() => inject(AppUpdateService).start()),
+    provideAppInitializer(() => inject(BoothMode).start()),
   ],
 };

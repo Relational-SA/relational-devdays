@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Relational @ DevDays",
   "short_name": "Relational",
-  "description": "Relational at DevDays: meet the team.",
+  "description": "Big O, a Higher or Lower game about software development, by Relational at DevDays.",
   "display": "standalone",
   "orientation": "any",
   "scope": "./",

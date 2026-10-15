@@ -1,7 +1,8 @@
 # Relational @ DevDays
 
-Booth app for the DevDays recruitment event: one Ionic + Angular progressive web app (PWA) that
-runs installed and pinned on the booth tablets and opens on visitors' phones from a QR code.
+Booth app for the DevDays recruitment event: **Big O**, a Higher or Lower game about software
+development. One Ionic + Angular progressive web app (PWA) runs installed and pinned on the booth
+tablets and opens on visitors' phones from a QR code.
 
 This repository is **public** (GitHub Pages on GitHub Free). Never commit secrets, internal
 documents or internal URLs. Brand assets are committed only in their derived, public form
@@ -16,11 +17,19 @@ documents or internal URLs. Brand assets are committed only in their derived, pu
 - Relational brand (colours, Sofia Sans, logo, icons): see [docs/brand.md](docs/brand.md). The
   fonts are under the SIL Open Font License ([src/theme/fonts/OFL.txt](src/theme/fonts/OFL.txt)).
 
+## The game
+
+Two cards, one question: is the second number higher or lower than the first? The questions are
+data ([src/app/game/packs/devdays-2026.json](src/app/game/packs/devdays-2026.json)), every number
+has a public source and a date, and a unit test checks the pack before each deploy. The best score
+is kept per device, with no names and no server. See [docs/game.md](docs/game.md) for the rules,
+the pack format, booth mode and setting up a tablet.
+
 ## Develop
 
 ```bash
 npm ci
-npm start          # http://localhost:4200 (service worker disabled in dev mode)
+npm start          # http://localhost:4200 (service worker disabled in dev mode; add ?booth for booth mode)
 npm test           # unit tests (Vitest)
 npm run build      # production build in dist/relational-devdays/browser, plus 404.html and 3rdpartylicenses.txt
 ```

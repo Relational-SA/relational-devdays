@@ -17,3 +17,10 @@ h6 {
 small {
   font-weight: 300;
 }
+
+/* Booth tablets (src/app/booth-mode.ts): no pinch zoom and no long-press callouts, so visitors
+   cannot leave the app zoomed in or open a menu. Phones keep zoom for accessibility. */
+body.booth {
+  touch-action: pan-x pan-y;
+  -webkit-touch-callout: none;
+}

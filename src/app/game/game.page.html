@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <app-brand-logo variant="secondary" />
+    @if (phase() === 'play') {
+      <p slot="end" class="score">Score <b>{{ game()?.score }}</b></p>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @switch (phase()) {
+    @case ('start') {
+      <section class="screen">
+        <h1 class="title">{{ name }}</h1>
+        <p class="subtitle">Higher or lower?</p>
+        <p class="rules">
+          Two cards, one question: is the second number higher or lower than the first? Keep
+          guessing right to raise your score. One wrong guess ends the game.
+        </p>
+        <ul class="topics" aria-label="Topics">
+          @for (topic of topics; track topic) {
+            <li>{{ topic }}</li>
+          }
+        </ul>
+        <button type="button" class="action" (click)="play()">Play</button>
+        @if (best.value() > 0) {
+          <p class="best">Best on this device: {{ best.value() }}</p>
+        }
+      </section>
+    }
+    @case ('play') {
+      @if (view(); as view) {
+        <section class="board">
+          <p class="topic">{{ view.category.title }}</p>
+          <div class="cards">
+            @for (card of view.cards; track card.key) {
+              <app-fact-card
+                animate.enter="card-enter"
+                [fact]="card.fact"
+                [category]="view.category"
+                [value]="card.value"
+                [versus]="view.game.left.name"
+                (guess)="guess($event)"
+              />
+            }
+            <div
+              class="badge"
+              [class.right]="reveal()?.settled && reveal()?.correct"
+              [class.wrong]="reveal()?.settled && !reveal()?.correct"
+              aria-hidden="true"
+            >
+              {{ view.badge }}
+            </div>
+          </div>
+          <p class="caption">{{ view.category.caption }}</p>
+        </section>
+      }
+    }
+    @case ('over') {
+      <section class="screen">
+        <h1>Game over</h1>
+        <p class="final">
+          <span class="final-score">{{ game()?.score }}</span>
+          {{ game()?.score === 1 ? 'point' : 'points' }}
+        </p>
+        @if (newBest()) {
+          <p class="new-best">New best on this device!</p>
+        } @else if (best.value() > 0) {
+          <p class="best">Best on this device: {{ best.value() }}</p>
+        }
+        <p class="verdict">{{ verdict() }}</p>
+        <p class="invite">Come and meet the team at our booth.</p>
+        <button type="button" class="action" (click)="play()">Play again</button>
+      </section>
+    }
+  }
+  <p class="visually-hidden" aria-live="polite">{{ announcement() }}</p>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <small>© 2026 Relational S.A. All rights reserved.</small>
+</ion-footer>
