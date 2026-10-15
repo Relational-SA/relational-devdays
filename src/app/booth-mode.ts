@@ -1,4 +1,4 @@
-import { DOCUMENT, Injectable, NgZone, inject } from '@angular/core';
+import { DOCUMENT, Injectable, inject } from '@angular/core';
 
 /** Input that counts as someone using the tablet. */
 const ACTIVITY_EVENTS = ['pointerdown', 'keydown'] as const;
@@ -12,7 +12,6 @@ const ACTIVITY_EVENTS = ['pointerdown', 'keydown'] as const;
 @Injectable({ providedIn: 'root' })
 export class BoothMode {
   private readonly document = inject(DOCUMENT);
-  private readonly zone = inject(NgZone);
 
   readonly active = this.detect();
 
@@ -30,25 +29,20 @@ export class BoothMode {
 
   /** Calls `callback` after `ms` without input; returns a function that stops watching. */
   onIdle(ms: number, callback: () => void): () => void {
-    // Outside the Angular zone, so a waiting timer does not keep the app from becoming stable
-    // (the service worker and the update checks wait for that).
-    return this.zone.runOutsideAngular(() => {
-      const fire = () => this.zone.run(callback);
-      let timer = setTimeout(fire, ms);
-      const restart = () => {
-        clearTimeout(timer);
-        timer = setTimeout(fire, ms);
-      };
+    let timer = setTimeout(callback, ms);
+    const restart = () => {
+      clearTimeout(timer);
+      timer = setTimeout(callback, ms);
+    };
+    for (const type of ACTIVITY_EVENTS) {
+      this.document.addEventListener(type, restart, { capture: true, passive: true });
+    }
+    return () => {
+      clearTimeout(timer);
       for (const type of ACTIVITY_EVENTS) {
-        this.document.addEventListener(type, restart, { capture: true, passive: true });
+        this.document.removeEventListener(type, restart, { capture: true });
       }
-      return () => {
-        clearTimeout(timer);
-        for (const type of ACTIVITY_EVENTS) {
-          this.document.removeEventListener(type, restart, { capture: true });
-        }
-      };
-    });
+    };
   }
 
   private detect(): boolean {

@@ -4,7 +4,6 @@ import {
   isDevMode,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection,
 } from '@angular/core';
 import { PreloadAllModules, RouteReuseStrategy, provideRouter, withPreloading } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -16,7 +15,6 @@ import { BoothMode } from './booth-mode';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideZoneChangeDetection({ eventCoalescing: true }),
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     // Material mode everywhere, so iPhones show the same branded UI as the Android tablets.
     provideIonicAngular({ mode: 'md' }),
