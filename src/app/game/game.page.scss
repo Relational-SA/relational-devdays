@@ -4,14 +4,16 @@
   -webkit-user-select: none;
 }
 
-// Aqua is the brand's main background. The content runs fullscreen under the transparent
-// footer, so the aqua continues to the bottom edge without a seam.
+// Aqua is the brand's main background. The content runs fullscreen under the footer, so the aqua
+// continues to the bottom edge without a seam; the footer is aqua too, so what scrolls under it on
+// a small phone hides behind it instead of running into the copyright line.
 ion-content {
   --background: var(--rel-aqua);
 }
 
 ion-footer {
   padding: 0.5rem 1rem calc(0.5rem + var(--ion-safe-area-bottom, 0px));
+  background: var(--rel-aqua);
   text-align: center;
 }
 

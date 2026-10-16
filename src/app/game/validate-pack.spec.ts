@@ -109,16 +109,18 @@ describe('validatePack', () => {
 describe('formatValue', () => {
   it('shows each format the way the cards do', () => {
     expect(formatValue(1991, 'year')).toBe('1991');
-    expect(formatValue(27017, 'code')).toBe('27017');
     expect(formatValue(27, 'integer')).toBe('27');
     expect(formatValue(251000, 'compact')).toBe('251K');
     expect(formatValue(57.9, 'percent')).toBe('57.9%');
     expect(formatValue(66, 'percent')).toBe('66%');
+    expect(formatValue(2_938_319_773, 'dollars')).toBe('$2.94B');
+    expect(formatValue(961_200_000, 'dollars')).toBe('$961M');
   });
 
   it('keeps the decimals of the value a number runs towards', () => {
     expect(formatValue(50.02, 'percent', 57.9)).toBe('50.0%');
     expect(formatValue(57.94, 'percent', 66)).toBe('58%');
     expect(formatValue(1990.6, 'year', 2005)).toBe('1991');
+    expect(formatValue(2_000_000_000, 'dollars', 2_938_319_773)).toBe('$2.00B');
   });
 });

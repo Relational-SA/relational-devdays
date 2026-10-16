@@ -31,11 +31,12 @@ h2 {
 }
 
 // The question with its buttons, and the value with its unit, stacked in one grid cell: the
-// cell is as tall as the taller of the two, and the turn is a short cross-fade.
+// cell is as tall as the taller of the two, and the turn is a short cross-fade. Both start at
+// the top, so the value and the question sit the same distance below the name.
 .stage {
   display: grid;
-  align-items: center;
-  margin-top: 0.5rem;
+  align-items: start;
+  margin-top: clamp(1rem, 4vmin, 2.25rem);
 }
 
 .ask,
@@ -60,6 +61,13 @@ h2 {
   .reveal {
     transition: none;
   }
+}
+
+// The line box starts at the top of the capitals, so the gap above them is the stage margin
+// and not the font's taller ascent (largest on the big value).
+.value,
+.question {
+  text-box: trim-start cap alphabetic;
 }
 
 .value {
