@@ -3,11 +3,16 @@ import { DOCUMENT, Injectable, inject } from '@angular/core';
 /** Input that counts as someone using the tablet. */
 const ACTIVITY_EVENTS = ['pointerdown', 'keydown'] as const;
 
+const STORAGE_KEY = 'relational-devdays.booth';
+
 /**
- * The booth tablets run the installed app full screen; visitors' phones open it in the browser
- * from the QR code. On the tablets the app keeps the screen on, blocks zooming and the
- * long-press menu, and pages can return to their start when nobody is using it. Add `?booth` to
- * the address to try booth mode in a browser.
+ * The booth tablets run the installed app full screen; visitors' phones open it from the QR code,
+ * in the browser or installed. On the tablets the app keeps the screen on, blocks zooming and the
+ * long-press menu, and pages can return to their start when nobody is using it.
+ *
+ * Booth mode belongs to the device, not to the installed app: `?booth` in the address switches it
+ * on and the device remembers it, so the app installed on a tablet keeps it (on Android it shares
+ * the browser's storage). `?booth=off` switches it off again.
  */
 @Injectable({ providedIn: 'root' })
 export class BoothMode {
@@ -50,10 +55,13 @@ export class BoothMode {
     if (!window) {
       return false;
     }
-    const installed = ['standalone', 'fullscreen'].some(
-      (mode) => window.matchMedia?.(`(display-mode: ${mode})`)?.matches,
-    );
-    return installed || new URLSearchParams(window.location.search).has('booth');
+    const asked = new URLSearchParams(window.location.search).get('booth');
+    if (asked === null) {
+      return remembered(window);
+    }
+    const on = asked !== 'off';
+    remember(window, on);
+    return on;
   }
 
   /** Pinch zoom is also blocked in CSS (`body.booth` in styles.scss). */
@@ -74,5 +82,27 @@ export class BoothMode {
     } catch {
       // Refused, e.g. in battery saver: the tablet's own screen timeout applies.
     }
+  }
+}
+
+function remembered(window: Window): boolean {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY) === 'on';
+  } catch {
+    return false;
+  }
+}
+
+function remember(window: Window, on: boolean): void {
+  try {
+    if (on) {
+      window.localStorage.setItem(STORAGE_KEY, 'on');
+      // Asks the browser to keep this setting and the offline copy when space runs low.
+      window.navigator.storage?.persist?.().catch(() => undefined);
+    } else {
+      window.localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch {
+    // Storage blocked (e.g. a private window): booth mode only while the address has `?booth`.
   }
 }

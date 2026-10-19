@@ -10,7 +10,7 @@ documents or internal URLs. Brand assets are committed only in their derived, pu
 
 ## Stack
 
-- Angular 22 (standalone components, zone.js change detection)
+- Angular 22 (standalone components, signals, zoneless change detection)
 - Ionic 9 (`@ionic/angular`, Material mode on every platform)
 - `@angular/service-worker`: offline app shell; installed apps poll for new versions every
   15 minutes and offer a reload
@@ -29,7 +29,7 @@ the pack format, booth mode and setting up a tablet.
 
 ```bash
 npm ci
-npm start          # http://localhost:4200 (service worker disabled in dev mode; add ?booth for booth mode)
+npm start          # http://localhost:4200 (service worker disabled in dev mode; ?booth / ?booth=off switch booth mode)
 npm test           # unit tests (Vitest)
 npm run build      # production build in dist/relational-devdays/browser, plus 404.html and 3rdpartylicenses.txt
 ```

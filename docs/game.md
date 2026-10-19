@@ -92,11 +92,12 @@ once Marketing has supplied or approved them, with a public source.
 
 ## Booth mode
 
-The booth tablets run the app installed and full screen; visitors' phones open it in the browser
-from the QR code. [src/app/booth-mode.ts](../src/app/booth-mode.ts) switches booth mode on when
-the app runs installed (display mode `standalone` or `fullscreen`), or when the address has
-`?booth` (to try it in a browser, for example `http://localhost:8080/?booth`). In booth mode the
-app:
+The booth tablets run the app installed and full screen; visitors' phones open it from the QR
+code, in the browser or installed. Booth mode belongs to the device, not to the installed app:
+[src/app/booth-mode.ts](../src/app/booth-mode.ts) switches it on when the address has `?booth`,
+and the device remembers it (`relational-devdays.booth` in local storage), so the app installed
+on a tablet keeps it. `?booth=off` switches it off again. To try it in a browser, open for
+example `http://localhost:8080/?booth`. In booth mode the app:
 
 - keeps the screen on (Screen Wake Lock), and takes the lock again when the app comes back to
   the front;
@@ -105,15 +106,20 @@ app:
 - returns to the start screen after 60 seconds without a tap, so the next visitor starts a
   fresh game.
 
-Phones in the browser keep zoom (for accessibility) and never reset a game.
+Phones that open the QR code never get booth mode, also when the app is installed: they keep
+zoom (for accessibility) and their own screen timeout, and never reset a game.
 
 ### Setting up a booth tablet
 
-1. Open <https://relational-sa.github.io/relational-devdays/> in Chrome and install the app
-   (menu > *Install app* or *Add to home screen*).
-2. Open it from the home screen icon, so it runs full screen in booth mode.
-3. Turn on Android screen pinning (Settings > Security, the exact menu depends on the vendor) and
+1. Open <https://relational-sa.github.io/relational-devdays/?booth> in Chrome, so the tablet
+   remembers booth mode. On Android the installed app shares Chrome's storage, so it has the
+   setting too.
+2. Install the app (menu > *Install app* or *Add to home screen*).
+3. Open it from the home screen icon, so it runs full screen in booth mode.
+4. Turn on Android screen pinning (Settings > Security, the exact menu depends on the vendor) and
    pin the app, so visitors cannot leave it.
-4. Keep the tablet charging, and turn off battery saver: it can refuse the wake lock, and the
+5. Keep the tablet charging, and turn off battery saver: it can refuse the wake lock, and the
    tablet's own screen timeout then applies.
-5. Turn on *Do not disturb*, so no notifications pop up over the game.
+6. Turn on *Do not disturb*, so no notifications pop up over the game.
+
+Clearing Chrome's data for the site also clears the setting: open the `?booth` address again.
