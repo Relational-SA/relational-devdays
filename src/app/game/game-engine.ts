@@ -4,7 +4,7 @@ import { Category, Fact, QuestionPack, formatValue } from './question-pack';
  * Higher or Lower, as pure functions. The player sees two facts from one category and guesses
  * whether the second value is higher or lower than the first. After a right guess the second
  * card becomes the first and a new one is dealt; every few rounds the game moves to the next
- * category. One wrong guess ends the game.
+ * category. One wrong guess ends the game. A game of one category keeps its chain of cards going.
  */
 
 export type Guess = 'higher' | 'lower';
@@ -52,7 +52,7 @@ export function newGame(pack: QuestionPack, random: () => number): GameState {
 export function advance(state: GameState, random: () => number): GameState {
   const score = state.score + 1;
   const streak = state.streak + 1;
-  if (streak < ROUNDS_PER_CATEGORY) {
+  if (streak < ROUNDS_PER_CATEGORY || state.order.length === 1) {
     const category = currentCategory(state);
     const next = pickNext(category, state.right, state.seen, score, random);
     if (next) {

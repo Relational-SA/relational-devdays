@@ -10,7 +10,10 @@ in "big or not". Change `GAME_NAME` in [src/app/game/game.page.ts](../src/app/ga
 
 ## How a game runs
 
-- Topics change every 5 right guesses (`ROUNDS_PER_CATEGORY`), in a random order that cycles.
+- The start screen offers *All topics* (the default) or one topic. With all topics, the topic
+  changes every 5 right guesses (`ROUNDS_PER_CATEGORY`), in a random order that cycles; with one
+  topic, the chain of cards just keeps going. After a game, *Play again* keeps the choice and
+  *Change topic* returns to the start screen.
 - The game never deals a tie: two cards never show the same number, as displayed.
 - Within a game, cards not dealt yet come first; cards repeat only when a topic runs out.
 - The game gets harder as the score grows: from a score of 20, only the closest 30% of the
@@ -103,11 +106,15 @@ example `http://localhost:8080/?booth`. In booth mode the app:
   the front;
 - blocks pinch zoom and the long-press menu, so visitors cannot leave the app zoomed in or open
   a menu;
-- returns to the start screen after 60 seconds without a tap, so the next visitor starts a
-  fresh game.
+- shows the game-over screen for 10 seconds without a tap, then the start screen for the next
+  visitor, with the topic just played still chosen;
+- returns to the start screen after 60 seconds without a tap during a game, and goes back to
+  *All topics* after 60 seconds without a tap on the start screen, so the next visitor starts
+  fresh.
 
 Phones that open the QR code never get booth mode, also when the app is installed: they keep
-zoom (for accessibility) and their own screen timeout, and never reset a game.
+zoom (for accessibility) and their own screen timeout, keep the result until the player plays
+again, and never reset a game.
 
 ### Setting up a booth tablet
 

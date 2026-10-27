@@ -60,20 +60,36 @@ h1 {
   font-size: clamp(1rem, 2.6vmin, 1.35rem);
 }
 
+// The topic choice: radio buttons drawn as chips, the chosen one in navy.
 .topics {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
+  min-inline-size: 0;
   margin: 0;
   padding: 0;
-  list-style: none;
+  border: 0;
 
-  li {
+  label {
+    position: relative;
     padding: 0.35rem 0.9rem;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.6);
     font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+
+    &:has(:checked) {
+      background: var(--rel-navy);
+      color: #ffffff;
+    }
+
+    &:has(:focus-visible) {
+      outline: 3px solid var(--rel-orange);
+      outline-offset: 2px;
+    }
   }
 }
 
@@ -98,6 +114,16 @@ h1 {
   &:focus-visible {
     outline: 3px solid var(--rel-orange);
     outline-offset: 3px;
+  }
+
+  // A second, quieter choice under the main one.
+  &.secondary {
+    margin-top: 0;
+    padding: 0.6rem 2rem;
+    border: 2px solid var(--rel-navy);
+    background: transparent;
+    color: var(--rel-navy);
+    font-size: clamp(1.1rem, 3vmin, 1.4rem);
   }
 }
 

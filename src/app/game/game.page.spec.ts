@@ -4,21 +4,36 @@ import { BoothMode } from '../booth-mode';
 import { GAME_RANDOM, GAME_TIMING, GamePage } from './game.page';
 import { Fact, QUESTION_PACK, QuestionPack } from './question-pack';
 
-const facts: Fact[] = [
+function made(entries: [string, string, number][]): Fact[] {
+  return entries.map(([id, name, value]) => ({
+    id,
+    name,
+    detail: 'Made up',
+    value,
+    source: 'https://example.org',
+    asOf: '2026',
+  }));
+}
+
+const years = made([
   ['alpha', 'Alpha', 1960],
   ['beta', 'Beta', 1970],
   ['gamma', 'Gamma', 1980],
   ['delta', 'Delta', 1990],
   ['epsilon', 'Epsilon', 2000],
   ['zeta', 'Zeta', 2010],
-].map(([id, name, value]) => ({
-  id: id as string,
-  name: name as string,
-  detail: 'Made up',
-  value: value as number,
-  source: 'https://example.org',
-  asOf: '2026',
-}));
+]);
+
+const stars = made([
+  ['one', 'One', 1],
+  ['two', 'Two', 2],
+  ['three', 'Three', 3],
+  ['four', 'Four', 4],
+  ['five', 'Five', 5],
+  ['six', 'Six', 6],
+]);
+
+const facts = [...years, ...stars];
 
 const pack: QuestionPack = {
   id: 'test',
@@ -32,7 +47,18 @@ const pack: QuestionPack = {
       question: 'Earlier or later than {name}?',
       higher: 'Later',
       lower: 'Earlier',
-      items: facts,
+      items: years,
+    },
+    {
+      id: 'stars',
+      title: 'Stars',
+      caption: 'Made up stars.',
+      format: 'integer',
+      unit: 'stars',
+      question: 'More or fewer than {name}?',
+      higher: 'More',
+      lower: 'Fewer',
+      items: stars,
     },
   ],
 };
@@ -40,8 +66,8 @@ const pack: QuestionPack = {
 describe('GamePage', () => {
   let fixture: ComponentFixture<GamePage>;
   let host: HTMLElement;
-  /** The booth's idle callback while the page watches for an idle tablet. */
-  let idle: (() => void) | undefined;
+  /** What the booth watches for while the page waits for input, if anything. */
+  let idle: { ms: number; callback: () => void } | undefined;
 
   function setUp(booth = false): void {
     TestBed.configureTestingModule({
@@ -50,13 +76,16 @@ describe('GamePage', () => {
         provideIonicAngular({ mode: 'md' }),
         { provide: QUESTION_PACK, useValue: pack },
         { provide: GAME_RANDOM, useValue: () => 0.5 },
-        { provide: GAME_TIMING, useValue: { count: 0, hold: 0, holdWrong: 0, idle: 60_000 } },
+        {
+          provide: GAME_TIMING,
+          useValue: { count: 0, hold: 0, holdWrong: 0, idle: 60_000, gameOver: 10_000 },
+        },
         {
           provide: BoothMode,
           useValue: {
             active: booth,
-            onIdle: (_ms: number, callback: () => void) => {
-              idle = callback;
+            onIdle: (ms: number, callback: () => void) => {
+              idle = { ms, callback };
               return () => (idle = undefined);
             },
           },
@@ -76,6 +105,27 @@ describe('GamePage', () => {
     return [...host.querySelectorAll('app-fact-card .name')].map(
       (name) => facts.find((fact) => fact.name === name.textContent?.trim())!,
     );
+  }
+
+  /** The topics on the start screen, the chosen one marked with a `*`. */
+  function topics(): string[] {
+    return [...host.querySelectorAll('.topics label')].map(
+      (label) => `${label.textContent?.trim()}${label.querySelector('input')?.checked ? ' *' : ''}`,
+    );
+  }
+
+  function choose(title: string): void {
+    const labels = [...host.querySelectorAll('.topics label')];
+    const label = labels.find((candidate) => candidate.textContent?.trim() === title)!;
+    label.querySelector('input')!.click();
+    fixture.detectChanges();
+  }
+
+  /** Lets the booth's idle callback run, as if nobody had touched the tablet. */
+  async function wait(): Promise<void> {
+    idle!.callback();
+    await fixture.whenStable();
+    fixture.detectChanges();
   }
 
   async function click(selector: string): Promise<void> {
@@ -105,9 +155,42 @@ describe('GamePage', () => {
     setUp();
 
     expect(text('h1')).toBe('Big O');
-    expect(text('.topics')).toBe('Which came first?');
+    expect(topics()).toEqual(['All topics *', 'Which came first?', 'Stars']);
     expect(host.querySelector('.best')).toBeNull();
     expect(host.querySelector('app-fact-card')).toBeNull();
+  });
+
+  it('plays only the chosen topic, past the usual change of topic', async () => {
+    setUp();
+    choose('Stars');
+    expect(topics()).toEqual(['All topics', 'Which came first?', 'Stars *']);
+
+    await click('.action');
+    for (let round = 0; round < 6; round++) {
+      expect(text('.topic')).toBe('Stars');
+      await answer(true);
+    }
+
+    expect(text('.score')).toBe('Score 6');
+    expect(text('.topic')).toBe('Stars');
+  });
+
+  it('plays the same topic again, or lets the player change it', async () => {
+    setUp();
+    choose('Stars');
+    await click('.action');
+    await answer(false);
+
+    await click('.action');
+    expect(text('.topic')).toBe('Stars');
+    await answer(false);
+
+    await click('.action.secondary');
+    expect(text('h1')).toBe('Big O');
+    expect(topics()).toEqual(['All topics', 'Which came first?', 'Stars *']);
+    choose('Which came first?');
+    await click('.action');
+    expect(text('.topic')).toBe('Which came first?');
   });
 
   it('deals two cards: the first with its value, the second with the question', async () => {
@@ -155,6 +238,8 @@ describe('GamePage', () => {
       `${second.name}: ${second.value}, ${relation} than ${left.name} (${left.value}).`,
     );
     expect(localStorage.getItem('relational-devdays.best-score')).toBe('1');
+    // A visitor's phone keeps the result until the player plays again.
+    expect(idle).toBeUndefined();
 
     await click('.action');
     expect(text('.score')).toBe('Score 0');
@@ -175,12 +260,30 @@ describe('GamePage', () => {
     expect(idle).toBeUndefined();
 
     await click('.action');
-    expect(idle).toBeDefined();
+    expect(idle?.ms).toBe(60_000);
 
-    idle!();
-    await fixture.whenStable();
-    fixture.detectChanges();
+    await wait();
     expect(text('h1')).toBe('Big O');
+    expect(idle).toBeUndefined();
+  });
+
+  it('shows a booth tablet the result for 10 seconds, then the start screen', async () => {
+    setUp(true);
+    choose('Stars');
+    await click('.action');
+
+    await answer(false);
+    expect(text('h1')).toBe('Game over');
+    expect(idle?.ms).toBe(10_000);
+
+    await wait();
+    expect(text('h1')).toBe('Big O');
+    expect(topics()).toEqual(['All topics', 'Which came first?', 'Stars *']);
+
+    // The chosen topic is not left for the next visitor.
+    expect(idle?.ms).toBe(60_000);
+    await wait();
+    expect(topics()).toEqual(['All topics *', 'Which came first?', 'Stars']);
     expect(idle).toBeUndefined();
   });
 });

@@ -85,21 +85,22 @@ describe('game engine', () => {
     expect(game.score).toBe(ROUNDS_PER_CATEGORY);
   });
 
-  it('deals every fact once before it repeats one', () => {
+  it('keeps the chain going in a game of one category, and deals every fact once', () => {
     const single: QuestionPack = { id: 'one', categories: [category('a', [1, 2, 3, 4, 5, 6, 7, 8])] };
     for (let seed = 1; seed <= 20; seed++) {
       const random = seeded(seed);
       let game = newGame(single, random);
       const dealt = [game.left.id, game.right.id];
-      // 4 more in the first stretch, then a fresh pair when the category starts again.
-      for (let round = 0; round < ROUNDS_PER_CATEGORY; round++) {
+      // Past ROUNDS_PER_CATEGORY: there is no other category to move to.
+      for (let round = 0; round < 6; round++) {
         const before = game.right;
         game = advance(game, random);
-        dealt.push(...(game.left === before ? [game.right.id] : [game.left.id, game.right.id]));
+        expect(game.left).toBe(before);
+        dealt.push(game.right.id);
       }
 
       expect(new Set(dealt).size).toBe(8);
-      expect(dealt).toHaveLength(8);
+      expect(game.score).toBe(6);
     }
   });
 

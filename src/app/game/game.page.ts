@@ -33,6 +33,8 @@ export interface GameTiming {
   readonly holdWrong: number;
   /** Booth tablets return to the start screen after this long without input. */
   readonly idle: number;
+  /** Booth tablets show the game-over screen this long without input, then the start screen. */
+  readonly gameOver: number;
 }
 
 export const GAME_TIMING = new InjectionToken<GameTiming>('GAME_TIMING', {
@@ -41,7 +43,13 @@ export const GAME_TIMING = new InjectionToken<GameTiming>('GAME_TIMING', {
     const reduceMotion = inject(DOCUMENT).defaultView?.matchMedia?.(
       '(prefers-reduced-motion: reduce)',
     )?.matches;
-    return { count: reduceMotion ? 0 : 1000, hold: 1100, holdWrong: 1600, idle: 60_000 };
+    return {
+      count: reduceMotion ? 0 : 1000,
+      hold: 1100,
+      holdWrong: 1600,
+      idle: 60_000,
+      gameOver: 10_000,
+    };
   },
 });
 
@@ -52,6 +60,11 @@ export const GAME_RANDOM = new InjectionToken<() => number>('GAME_RANDOM', {
 });
 
 type Phase = 'start' | 'play' | 'over';
+
+interface Topic {
+  readonly id: string | null;
+  readonly title: string;
+}
 
 interface Reveal {
   readonly correct: boolean;
@@ -74,7 +87,13 @@ export class GamePage {
   protected readonly best = inject(BestScore);
 
   protected readonly name = GAME_NAME;
-  protected readonly topics = this.pack.categories.map((category) => category.title);
+  /** The start screen's choice: every topic, or one of them. */
+  protected readonly topics: readonly Topic[] = [
+    { id: null, title: 'All topics' },
+    ...this.pack.categories.map(({ id, title }) => ({ id, title })),
+  ];
+  /** The chosen topic's category id; `null` plays every topic. */
+  protected readonly topic = signal<string | null>(null);
 
   protected readonly phase = signal<Phase>('start');
   protected readonly game = signal<GameState | null>(null);
@@ -127,16 +146,25 @@ export class GamePage {
   private run = 0;
 
   constructor() {
+    // On a booth tablet the result makes way for the next visitor, who keeps the topic just
+    // played; a game or a chosen topic that nobody uses returns to a fresh start screen.
     effect((onCleanup) => {
-      if (this.booth.active && this.phase() !== 'start') {
+      if (!this.booth.active) {
+        return;
+      }
+      if (this.phase() === 'over') {
+        onCleanup(this.booth.onIdle(this.timing.gameOver, () => this.home()));
+      } else if (this.phase() === 'play' || this.topic() !== null) {
         onCleanup(this.booth.onIdle(this.timing.idle, () => this.reset()));
       }
     });
   }
 
   protected play(): void {
+    const topic = this.topic();
+    const categories = this.pack.categories.filter(({ id }) => topic === null || id === topic);
     this.run++;
-    this.game.set(newGame(this.pack, this.random));
+    this.game.set(newGame({ ...this.pack, categories }, this.random));
     this.reveal.set(null);
     this.newBest.set(false);
     this.announcement.set('');
@@ -172,10 +200,16 @@ export class GamePage {
     }
   }
 
+  /** Back to the start screen after a game, with the topic just played still chosen. */
+  protected home(): void {
+    this.phase.set('start');
+  }
+
   private reset(): void {
     this.run++;
     this.game.set(null);
     this.reveal.set(null);
+    this.topic.set(null);
     this.phase.set('start');
   }
 

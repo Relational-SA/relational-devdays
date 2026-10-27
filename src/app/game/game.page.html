@@ -15,13 +15,24 @@
         <p class="subtitle">Higher or lower?</p>
         <p class="rules">
           Two cards, one question: is the second number higher or lower than the first? Keep
-          guessing right to raise your score. One wrong guess ends the game.
+          guessing right to raise your score. One wrong guess ends the game. Play every topic, or
+          pick one.
         </p>
-        <ul class="topics" aria-label="Topics">
-          @for (topic of topics; track topic) {
-            <li>{{ topic }}</li>
+        <fieldset class="topics">
+          <legend class="visually-hidden">Topic</legend>
+          @for (option of topics; track option.id) {
+            <label>
+              <input
+                type="radio"
+                name="topic"
+                class="visually-hidden"
+                [checked]="topic() === option.id"
+                (change)="topic.set(option.id)"
+              />
+              {{ option.title }}
+            </label>
           }
-        </ul>
+        </fieldset>
         <button type="button" class="action" (click)="play()">Play</button>
         @if (best.value() > 0) {
           <p class="best">Best on this device: {{ best.value() }}</p>
@@ -71,6 +82,7 @@
         <p class="verdict">{{ verdict() }}</p>
         <p class="invite">Come and meet the team at our booth.</p>
         <button type="button" class="action" (click)="play()">Play again</button>
+        <button type="button" class="action secondary" (click)="home()">Change topic</button>
       </section>
     }
   }
